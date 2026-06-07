@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM"],
+    "types": ["node"],
+    "skipLibCheck": true,
+    "strict": true,
+    "allowJs": true,
+    "checkJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "noErrorTruncation": true,
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": false,
+    "noEmit": true,
+    "isolatedModules": true,
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "convex-headless-cms": ["./src/client/index.ts"],
+      "convex-headless-cms/convex.config": ["./src/component/convex.config.ts"],
+      "convex-headless-cms/test": ["./src/test.ts"],
+      "convex-headless-cms/_generated/component": ["./src/component/_generated/component.ts"]
+    }
+  },
+  "include": ["./src/**/*", "./example/convex/**/*"]
+}

@@ -1,0 +1,34 @@
+{
+  /* This TypeScript project config describes the environment that
+   * Convex functions run in and is used to typecheck them.
+   * You can modify it, but some settings are required to use Convex.
+   */
+  "compilerOptions": {
+    /* These settings are not required by Convex and can be modified. */
+    "allowJs": true,
+    "strict": true,
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"],
+
+    /* These compiler options are required by Convex */
+    "target": "ESNext",
+    "lib": ["ES2023", "dom"],
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "isolatedModules": true,
+    "noEmit": true,
+
+    /* Resolve convex-headless-cms imports from source so no rebuild is needed */
+    "paths": {
+      "convex-headless-cms": ["../../src/client/index.ts"],
+      "convex-headless-cms/convex.config": ["../../src/component/convex.config.ts"],
+      "convex-headless-cms/test": ["../../src/test.ts"],
+      "convex-headless-cms/_generated/component": ["../../src/component/_generated/component.ts"]
+    }
+  },
+  "include": ["./**/*"],
+  "exclude": ["./_generated"]
+}

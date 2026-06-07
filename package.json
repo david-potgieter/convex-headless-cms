@@ -1,0 +1,84 @@
+{
+  "name": "convex-headless-cms",
+  "description": "Headless CMS as a Convex component — schema, queries, mutations, publish workflows, i18n, and search. No bundled UI.",
+  "repository": "github:david-potgieter/convex-headless-cms",
+  "homepage": "https://github.com/david-potgieter/convex-headless-cms#readme",
+  "bugs": {
+    "url": "https://github.com/david-potgieter/convex-headless-cms/issues"
+  },
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "keywords": [
+    "convex",
+    "component",
+    "cms",
+    "headless"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "bunx convex dev",
+    "dev:codegen": "bunx convex codegen --component-dir ./src/component --watch",
+    "dev:build": "tsup --watch",
+    "build": "tsup",
+    "build:full": "bunx convex codegen --component-dir ./src/component && tsup",
+    "build:clean": "rm -rf dist && bun run build:full",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "test:watch": "vitest --clearScreen false",
+    "test:debug": "vitest --inspect-brk --no-file-parallelism",
+    "test:coverage": "vitest run --coverage --coverage.reporter=text",
+    "changesets": "changeset",
+    "release": "changeset publish"
+  },
+  "files": [
+    "dist",
+    "src/component/_generated/component.ts",
+    "src/test.ts"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./convex.config": {
+      "types": "./src/component/convex.config.ts",
+      "import": "./dist/convex.config.js"
+    },
+    "./_generated/component": "./src/component/_generated/component.ts",
+    "./test": "./src/test.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "convex": ">=1.36.1"
+  },
+  "dependencies": {
+    "convex-helpers": "^0.1.88",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.31.0",
+    "@convex-dev/eslint-plugin": "^2.0.0",
+    "@edge-runtime/vm": "^5.0.0",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "9.39.4",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^24.12.2",
+    "convex": "1.36.1",
+    "convex-test": "0.0.49",
+    "eslint": "9.39.4",
+    "globals": "^17.5.0",
+    "pkg-pr-new": "^0.0.66",
+    "prettier": "3.8.3",
+    "tsup": "latest",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.58.2",
+    "vite": "8.0.9",
+    "vitest": "4.1.4"
+  },
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js"
+}
