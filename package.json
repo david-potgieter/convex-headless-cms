@@ -6,7 +6,7 @@
   "bugs": {
     "url": "https://github.com/david-potgieter/convex-headless-cms/issues"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "Apache-2.0",
   "keywords": [
     "convex",
@@ -29,7 +29,8 @@
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
     "test:coverage": "vitest run --coverage --coverage.reporter=text",
     "changesets": "changeset",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "prepare": "husky"
   },
   "files": [
     "dist",
@@ -71,6 +72,7 @@
     "convex-test": "0.0.49",
     "eslint": "9.39.4",
     "globals": "^17.5.0",
+    "husky": "^9.1.7",
     "pkg-pr-new": "^0.0.66",
     "prettier": "3.8.3",
     "tsup": "latest",

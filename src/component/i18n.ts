@@ -11,7 +11,7 @@ export const createTranslation = mutation({
   },
   returns: v.id("entries"),
   handler: async (ctx, args) => {
-    const source = await ctx.db.get(args.sourceEntryId);
+    const source = await ctx.db.get("entries", args.sourceEntryId);
     if (!source) throw new Error("Source entry not found");
 
     // Use or create a translationGroupId to link all translations
@@ -19,7 +19,7 @@ export const createTranslation = mutation({
 
     // Stamp the source entry with the group ID if it doesn't have one yet
     if (!source.translationGroupId) {
-      await ctx.db.patch(args.sourceEntryId, {
+      await ctx.db.patch("entries", args.sourceEntryId, {
         translationGroupId: args.sourceEntryId,
       });
     }
@@ -61,7 +61,7 @@ export const listTranslations = query({
   args: { entryId: v.id("entries") },
   returns: v.array(entryDoc),
   handler: async (ctx, args) => {
-    const entry = await ctx.db.get(args.entryId);
+    const entry = await ctx.db.get("entries", args.entryId);
     if (!entry) return [];
     const groupId = entry.translationGroupId ?? args.entryId;
     return await ctx.db

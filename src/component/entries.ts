@@ -34,7 +34,7 @@ export const get = query({
   args: { entryId: v.id("entries") },
   returns: v.union(v.null(), entryDoc),
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.entryId);
+    return await ctx.db.get("entries", args.entryId);
   },
 });
 
@@ -134,7 +134,7 @@ export const update = mutation({
     if (fields.tags !== undefined) patch.tags = fields.tags;
     if (fields.featuredImageId !== undefined) patch.featuredImageId = fields.featuredImageId;
     if (fields.metadata !== undefined) patch.metadata = fields.metadata;
-    await ctx.db.patch(entryId, patch);
+    await ctx.db.patch("entries", entryId, patch);
     return null;
   },
 });
@@ -155,6 +155,7 @@ export const getPublishedBySlug = query({
         .withIndex("by_slug_and_contentType", (q) =>
           q.eq("slug", slug).eq("contentType", contentType),
         )
+        // eslint-disable-next-line @convex-dev/no-filter-in-query
         .filter((q) =>
           q.and(
             q.eq(q.field("status"), "published"),
@@ -178,6 +179,7 @@ export const getPublishedBySlug = query({
         .withIndex("by_slug_and_contentType", (q) =>
           q.eq("slug", slug).eq("contentType", contentType),
         )
+        // eslint-disable-next-line @convex-dev/no-filter-in-query
         .filter((q) =>
           q.and(
             q.eq(q.field("status"), "published"),
@@ -194,6 +196,7 @@ export const getPublishedBySlug = query({
       .withIndex("by_slug_and_contentType", (q) =>
         q.eq("slug", slug).eq("contentType", contentType),
       )
+      // eslint-disable-next-line @convex-dev/no-filter-in-query
       .filter((q) => q.eq(q.field("status"), "published"))
       .first();
   },
@@ -252,8 +255,8 @@ export const remove = mutation({
       .query("entryBlocks")
       .withIndex("by_entryId_and_order", (q) => q.eq("entryId", args.entryId))
       .collect();
-    await Promise.all(blocks.map((b) => ctx.db.delete(b._id)));
-    await ctx.db.delete(args.entryId);
+    await Promise.all(blocks.map((b) => ctx.db.delete("entryBlocks", b._id)));
+    await ctx.db.delete("entries", args.entryId);
     return null;
   },
 });

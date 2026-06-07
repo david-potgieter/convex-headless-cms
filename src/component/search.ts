@@ -13,8 +13,7 @@ export const searchText = query({
   },
   returns: v.array(entryDoc),
   handler: async (ctx, args) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const q = ctx.db.query("entries").withSearchIndex("search_title", (s: any) => {
+      const q = ctx.db.query("entries").withSearchIndex("search_title", (s: any) => {
       let sq = s.search("title", args.queryText);
       if (args.contentType !== undefined) sq = sq.eq("contentType", args.contentType);
       if (args.status !== undefined) sq = sq.eq("status", args.status);
@@ -77,7 +76,7 @@ export const setEmbedding = mutation({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.entryId, { embedding: args.embedding });
+    await ctx.db.patch("entries", args.entryId, { embedding: args.embedding });
     return null;
   },
 });
