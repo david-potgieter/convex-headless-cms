@@ -10,7 +10,7 @@ export const schedule = mutation({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    const entry = await ctx.db.get(args.entryId);
+    const entry = await ctx.db.get("entries", args.entryId);
     if (!entry) throw new Error("Entry not found");
     if (entry.status === "published" || entry.status === "archived") {
       throw new Error(`Cannot schedule publish for status "${entry.status}"`);
@@ -25,7 +25,7 @@ export const schedule = mutation({
       internal.schedule.publishScheduled,
       { entryId: args.entryId },
     );
-    await ctx.db.patch(args.entryId, {
+    await ctx.db.patch("entries", args.entryId, {
       scheduledPublishTime: args.publishAt,
       scheduledPublishJobId: jobId as string,
     });
@@ -37,14 +37,14 @@ export const cancelSchedule = mutation({
   args: { entryId: v.id("entries") },
   returns: v.null(),
   handler: async (ctx, args) => {
-    const entry = await ctx.db.get(args.entryId);
+    const entry = await ctx.db.get("entries", args.entryId);
     if (!entry) throw new Error("Entry not found");
     if (entry.scheduledPublishJobId) {
       await ctx.scheduler.cancel(
         entry.scheduledPublishJobId as Id<"_scheduled_functions">,
       );
     }
-    await ctx.db.patch(args.entryId, {
+    await ctx.db.patch("entries", args.entryId, {
       scheduledPublishTime: undefined,
       scheduledPublishJobId: undefined,
     });
@@ -56,12 +56,12 @@ export const publishScheduled = internalMutation({
   args: { entryId: v.id("entries") },
   returns: v.null(),
   handler: async (ctx, args) => {
-    const entry = await ctx.db.get(args.entryId);
+    const entry = await ctx.db.get("entries", args.entryId);
     if (!entry) return null;
     if (entry.status === "published" || entry.status === "archived") {
       return null;
     }
-    await ctx.db.patch(args.entryId, {
+    await ctx.db.patch("entries", args.entryId, {
       status: "published",
       publishedAt: Date.now(),
       scheduledPublishTime: undefined,

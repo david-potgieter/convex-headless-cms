@@ -40,7 +40,7 @@ export const replace = mutation({
       .query("entryBlocks")
       .withIndex("by_entryId_and_order", (q) => q.eq("entryId", args.entryId))
       .collect();
-    await Promise.all(existing.map((b) => ctx.db.delete(b._id)));
+    await Promise.all(existing.map((b) => ctx.db.delete("entryBlocks", b._id)));
     const sorted = sortBy(args.blocks, "order");
     await Promise.all(
       sorted.map((block) =>
@@ -63,7 +63,7 @@ export const upsertBlock = mutation({
   handler: async (ctx, args) => {
     const { blockId, entryId, ...fields } = args;
     if (blockId !== undefined) {
-      await ctx.db.patch(blockId, fields);
+      await ctx.db.patch("entryBlocks", blockId, fields);
       return blockId;
     }
     return await ctx.db.insert("entryBlocks", { entryId, ...fields });
@@ -74,7 +74,7 @@ export const removeBlock = mutation({
   args: { blockId: v.id("entryBlocks") },
   returns: v.null(),
   handler: async (ctx, args) => {
-    await ctx.db.delete(args.blockId);
+    await ctx.db.delete("entryBlocks", args.blockId);
     return null;
   },
 });
