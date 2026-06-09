@@ -1,5 +1,14 @@
 # convex-headless-cms
 
+## 1.1.1
+
+### Patch Changes
+
+- [#9](https://github.com/david-potgieter/convex-headless-cms/pull/9)
+  [`696cdf7`](https://github.com/david-potgieter/convex-headless-cms/commit/696cdf7f01ebc41dfde7a2ee1f84aa1b4217e9e8)
+  Thanks [@david-potgieter](https://github.com/david-potgieter)! - Fix for
+  missing validator
+
 ## 1.1.0
 
 ### Minor Changes
