@@ -180,6 +180,17 @@ const frEntryId = await ctx.runMutation(api.cms.createTranslation, {
 })
 ```
 
+Entries created via `createTranslation` are marked with `isTranslation: true`. Use `rootOnly: true` in `listEntriesForAdmin` to show only source entries in your CMS list view — each result includes a `locales` array of all locale codes in the translation group, so you can render locale badges without extra queries:
+
+```ts
+const { page } = await ctx.runQuery(api.cms.listEntriesForAdmin, {
+  contentType: 'post',
+  rootOnly: true,
+  paginationOpts: { numItems: 20, cursor: null },
+})
+// page[0].locales → ['en', 'fr', 'de']
+```
+
 ### Vector search
 
 ```ts
@@ -249,7 +260,7 @@ makeHeadlessCmsAPI(components.headlessCms, {
 | `getPublishedEntryBySlug({ slug, contentType, locale? })` | query | Published only; locale fallback via `defaultLocale` |
 | `listPublishedEntries({ contentType?, locale?, paginationOpts })` | query | Cursor-paginated published entries |
 | `getEntryForAdmin({ entryId })` | query | Fetch any entry regardless of status |
-| `listEntriesForAdmin({ status?, contentType?, locale?, paginationOpts })` | query | Cursor-paginated admin view — all statuses |
+| `listEntriesForAdmin({ status?, contentType?, locale?, rootOnly?, paginationOpts })` | query | Cursor-paginated admin view — all statuses; `rootOnly: true` excludes translations; each item includes a `locales` field |
 | `listBlocks({ entryId })` | query | List blocks ordered by `order` |
 | `replaceBlocks({ entryId, blocks })` | mutation | Atomically replace all blocks |
 | `upsertBlock(args)` | mutation | Insert or update a single block |

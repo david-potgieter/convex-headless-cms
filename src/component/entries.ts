@@ -1,6 +1,7 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server.js";
+import { mutation, query, QueryCtx } from "./_generated/server.js";
 import { paginationOptsValidator } from "convex/server";
+import { Doc } from "./_generated/dataModel.js";
 import { paginator } from "convex-helpers/server/pagination";
 import schema, { entryStatusValidator } from "./schema.js";
 
@@ -26,6 +27,7 @@ export const create = mutation({
     return await ctx.db.insert("entries", {
       ...args,
       status: "draft",
+      isTranslation: false,
     });
   },
 });
@@ -244,6 +246,102 @@ export const listPublished = query({
       .withIndex("by_status", (q) => q.eq("status", "published"))
       .order("desc")
       .paginate(paginationOpts);
+  },
+});
+
+async function getEntryLocales(
+  ctx: QueryCtx,
+  entry: Doc<"entries">,
+): Promise<string[]> {
+  const groupId = entry.translationGroupId;
+  if (!groupId) {
+    return entry.locale !== undefined ? [entry.locale] : [];
+  }
+  const siblings = await ctx.db
+    .query("entries")
+    .withIndex("by_translationGroupId", (q) =>
+      q.eq("translationGroupId", groupId),
+    )
+    .take(50);
+  return siblings
+    .map((s) => s.locale)
+    .filter((l): l is string => l !== undefined);
+}
+
+export const listEntriesForAdmin = query({
+  args: {
+    paginationOpts: paginationOptsValidator,
+    contentType: v.optional(v.string()),
+    status: v.optional(entryStatusValidator),
+    locale: v.optional(v.string()),
+    rootOnly: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const { contentType, status, locale, rootOnly, paginationOpts } = args;
+    const db = paginator(ctx.db, schema);
+
+    let result;
+
+    if (rootOnly === true && contentType !== undefined) {
+      result = await db
+        .query("entries")
+        .withIndex("by_contentType_and_isTranslation", (q) =>
+          q.eq("contentType", contentType).eq("isTranslation", false),
+        )
+        .order("desc")
+        .paginate(paginationOpts);
+    } else if (rootOnly === true) {
+      result = await db
+        .query("entries")
+        .withIndex("by_isTranslation", (q) => q.eq("isTranslation", false))
+        .order("desc")
+        .paginate(paginationOpts);
+    } else if (contentType !== undefined && locale !== undefined) {
+      result = await db
+        .query("entries")
+        .withIndex("by_contentType_and_locale", (q) =>
+          q.eq("contentType", contentType).eq("locale", locale),
+        )
+        .order("desc")
+        .paginate(paginationOpts);
+    } else if (contentType !== undefined && status !== undefined) {
+      result = await db
+        .query("entries")
+        .withIndex("by_contentType_and_status", (q) =>
+          q.eq("contentType", contentType).eq("status", status),
+        )
+        .order("desc")
+        .paginate(paginationOpts);
+    } else if (contentType !== undefined) {
+      result = await db
+        .query("entries")
+        .withIndex("by_contentType", (q) => q.eq("contentType", contentType))
+        .order("desc")
+        .paginate(paginationOpts);
+    } else if (locale !== undefined) {
+      result = await db
+        .query("entries")
+        .withIndex("by_locale", (q) => q.eq("locale", locale))
+        .order("desc")
+        .paginate(paginationOpts);
+    } else if (status !== undefined) {
+      result = await db
+        .query("entries")
+        .withIndex("by_status", (q) => q.eq("status", status))
+        .order("desc")
+        .paginate(paginationOpts);
+    } else {
+      result = await db.query("entries").order("desc").paginate(paginationOpts);
+    }
+
+    const page = await Promise.all(
+      result.page.map(async (entry) => {
+        const locales = await getEntryLocales(ctx, entry);
+        return { ...entry, locales };
+      }),
+    );
+
+    return { ...result, page };
   },
 });
 
