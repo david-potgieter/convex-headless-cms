@@ -16,6 +16,7 @@ export default defineSchema({
     title: v.optional(v.string()),
     locale: v.optional(v.string()),
     translationGroupId: v.optional(v.id("entries")),
+    isTranslation: v.optional(v.boolean()),
     authorId: v.string(),
     tags: v.optional(v.array(v.string())),
     featuredImageId: v.optional(v.string()),
@@ -36,6 +37,8 @@ export default defineSchema({
     .index("by_locale", ["locale"])
     .index("by_locale_and_status", ["locale", "status"])
     .index("by_translationGroupId", ["translationGroupId"])
+    .index("by_isTranslation", ["isTranslation"])
+    .index("by_contentType_and_isTranslation", ["contentType", "isTranslation"])
     .index("by_authorId", ["authorId"])
     .index("by_status", ["status"])
     .index("by_scheduledPublishTime", ["scheduledPublishTime"])

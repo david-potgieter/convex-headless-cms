@@ -31,6 +31,7 @@ export const createTranslation = mutation({
       title: source.title,
       locale: args.locale,
       translationGroupId,
+      isTranslation: true,
       authorId: args.authorId,
     });
 
