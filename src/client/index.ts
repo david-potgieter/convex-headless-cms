@@ -177,9 +177,10 @@ export function makeHeadlessCmsAPI(
         contentType: v.optional(v.string()),
         status: v.optional(entryStatusValidator),
         locale: v.optional(v.string()),
+        rootOnly: v.optional(v.boolean()),
       },
       handler: async (ctx, args) => {
-        return await ctx.runQuery(component.entries.list, args);
+        return await ctx.runQuery(component.entries.listEntriesForAdmin, { ...args, rootOnly: args.rootOnly ?? false });
       },
     }),
 
