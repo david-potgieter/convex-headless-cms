@@ -181,6 +181,26 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         any,
         Name
       >;
+      listEntriesForAdmin: FunctionReference<
+        "query",
+        "internal",
+        {
+          contentType?: string;
+          locale?: string;
+          paginationOpts: {
+            cursor: string | null;
+            endCursor?: string | null;
+            id?: number;
+            maximumBytesRead?: number;
+            maximumRowsRead?: number;
+            numItems: number;
+          };
+          rootOnly?: boolean;
+          status?: "draft" | "pending_review" | "published" | "archived";
+        },
+        any,
+        Name
+      >;
       listPublished: FunctionReference<
         "query",
         "internal",
