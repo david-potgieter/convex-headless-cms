@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as assets from "../assets.js";
 import type * as blocks from "../blocks.js";
 import type * as entries from "../entries.js";
 import type * as i18n from "../i18n.js";
@@ -25,6 +26,7 @@ import type {
 import { anyApi, componentsGeneric } from "convex/server";
 
 const fullApi: ApiFromModules<{
+  assets: typeof assets;
   blocks: typeof blocks;
   entries: typeof entries;
   i18n: typeof i18n;

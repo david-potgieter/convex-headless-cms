@@ -23,6 +23,53 @@ import type { FunctionReference } from "convex/server";
  */
 export type ComponentApi<Name extends string | undefined = string | undefined> =
   {
+    assets: {
+      create: FunctionReference<
+        "mutation",
+        "internal",
+        {
+          alt?: string;
+          mimeType?: string;
+          name: string;
+          size?: number;
+          storageId: string;
+          type: "image" | "video" | "audio" | "document" | "other";
+        },
+        string,
+        Name
+      >;
+      list: FunctionReference<
+        "query",
+        "internal",
+        {
+          paginationOpts: {
+            cursor: string | null;
+            endCursor?: string | null;
+            id?: number;
+            maximumBytesRead?: number;
+            maximumRowsRead?: number;
+            numItems: number;
+          };
+          type?: "image" | "video" | "audio" | "document" | "other";
+        },
+        any,
+        Name
+      >;
+      remove: FunctionReference<
+        "mutation",
+        "internal",
+        { assetId: string },
+        null,
+        Name
+      >;
+      update: FunctionReference<
+        "mutation",
+        "internal",
+        { alt?: string; assetId: string; name?: string },
+        null,
+        Name
+      >;
+    };
     blocks: {
       list: FunctionReference<
         "query",
@@ -98,6 +145,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           contentType: string;
           embedding?: Array<number>;
           featuredImageId?: string;
+          isTranslation?: boolean;
           locale?: string;
           metadata?: any;
           publishedAt?: number;
@@ -123,6 +171,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           contentType: string;
           embedding?: Array<number>;
           featuredImageId?: string;
+          isTranslation?: boolean;
           locale?: string;
           metadata?: any;
           publishedAt?: number;
@@ -148,6 +197,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           contentType: string;
           embedding?: Array<number>;
           featuredImageId?: string;
+          isTranslation?: boolean;
           locale?: string;
           metadata?: any;
           publishedAt?: number;
@@ -266,6 +316,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           contentType: string;
           embedding?: Array<number>;
           featuredImageId?: string;
+          isTranslation?: boolean;
           locale?: string;
           metadata?: any;
           publishedAt?: number;
@@ -352,6 +403,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           contentType: string;
           embedding?: Array<number>;
           featuredImageId?: string;
+          isTranslation?: boolean;
           locale?: string;
           metadata?: any;
           publishedAt?: number;
@@ -416,53 +468,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         "internal",
         { storageId: string },
         string | null,
-        Name
-      >;
-    };
-    assets: {
-      list: FunctionReference<
-        "query",
-        "internal",
-        {
-          paginationOpts: {
-            cursor: string | null;
-            endCursor?: string | null;
-            id?: number;
-            maximumBytesRead?: number;
-            maximumRowsRead?: number;
-            numItems: number;
-          };
-          type?: "image" | "video" | "audio" | "document" | "other";
-        },
-        any,
-        Name
-      >;
-      create: FunctionReference<
-        "mutation",
-        "internal",
-        {
-          storageId: string;
-          name: string;
-          type: "image" | "video" | "audio" | "document" | "other";
-          mimeType?: string;
-          alt?: string;
-          size?: number;
-        },
-        string,
-        Name
-      >;
-      update: FunctionReference<
-        "mutation",
-        "internal",
-        { assetId: string; name?: string; alt?: string },
-        null,
-        Name
-      >;
-      remove: FunctionReference<
-        "mutation",
-        "internal",
-        { assetId: string },
-        null,
         Name
       >;
     };
