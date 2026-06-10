@@ -43,6 +43,7 @@ export const createTranslation = mutation({
             entryId: newEntryId,
             tag,
             contentType: source.contentType,
+            locale: args.locale,
           }),
         ),
       );

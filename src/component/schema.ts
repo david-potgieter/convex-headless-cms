@@ -73,10 +73,15 @@ export default defineSchema({
     entryId: v.id("entries"),
     tag: v.string(),
     contentType: v.string(),
+    locale: v.optional(v.string()),
   })
     .index("by_tag", ["tag"])
     .index("by_tag_and_contentType", ["tag", "contentType"])
+    .index("by_tag_and_locale", ["tag", "locale"])
+    .index("by_tag_contentType_and_locale", ["tag", "contentType", "locale"])
     .index("by_contentType", ["contentType"])
+    .index("by_contentType_and_locale", ["contentType", "locale"])
+    .index("by_locale", ["locale"])
     .index("by_entryId", ["entryId"]),
 
   entryBlocks: defineTable({

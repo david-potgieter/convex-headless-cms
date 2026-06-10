@@ -204,8 +204,8 @@ const { page } = await ctx.runQuery(api.cms.listEntriesForAdmin, {
   paginationOpts: { numItems: 20, cursor: null },
 })
 
-// Get all tags with counts (for a filter sidebar)
-const tags = await ctx.runQuery(api.cms.listTags, { contentType: 'post' })
+// Get all tags with counts (for a filter sidebar), scoped to a locale
+const tags = await ctx.runQuery(api.cms.listTags, { contentType: 'post', locale: 'en' })
 // [{ tag: 'javascript', count: 12 }, { tag: 'typescript', count: 8 }, ...]
 ```
 
@@ -328,7 +328,7 @@ makeHeadlessCmsAPI(components.headlessCms, {
 | `setEmbedding({ entryId, embedding })` | mutation | Store a vector embedding on an entry |
 | `createTranslation({ sourceEntryId, locale, authorId, copyBlocks? })` | mutation | Create a localised copy linked by translation group; inherits tags from source |
 | `listTranslations({ entryId })` | query | All entries sharing the same translation group |
-| `listTags({ contentType? })` | query | All distinct tags with entry counts, sorted by popularity; optionally scoped to a content type |
+| `listTags({ contentType?, locale? })` | query | All distinct tags with entry counts, sorted by popularity; optionally scoped to a content type and/or locale |
 | `getSetting({ key })` | query | Read a single site setting |
 | `getAllSettings({})` | query | Read all site settings |
 | `upsertSetting({ key, value })` | mutation | Write or overwrite a site setting |

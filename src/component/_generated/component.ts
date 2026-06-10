@@ -27,7 +27,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
       listTags: FunctionReference<
         "query",
         "internal",
-        { contentType?: string },
+        { contentType?: string; locale?: string },
         Array<{ tag: string; count: number }>,
         Name
       >;
