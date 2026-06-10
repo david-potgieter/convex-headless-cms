@@ -281,6 +281,7 @@ makeHeadlessCmsAPI(components.headlessCms, {
 | `getAllSettings({})` | query | Read all site settings |
 | `upsertSetting({ key, value })` | mutation | Write or overwrite a site setting |
 | `generateUploadUrl({})` | mutation | Get a Convex file upload URL |
+| `getStorageUrl({ storageId })` | query | Resolve a storageId to a signed retrieval URL (returns `null` if the file does not exist) |
 
 ## Testing
 
