@@ -366,7 +366,10 @@ export function makeHeadlessCmsAPI(
     // ── Tags ─────────────────────────────────────────────────────────────────
 
     listTags: queryGeneric({
-      args: { contentType: v.optional(v.string()) },
+      args: {
+        contentType: v.optional(v.string()),
+        locale: v.optional(v.string()),
+      },
       handler: async (ctx, args) => {
         return await ctx.runQuery(component.tags.listTags, args);
       },

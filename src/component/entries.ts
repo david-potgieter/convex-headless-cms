@@ -34,6 +34,7 @@ async function syncEntryTags(
   entryId: Id<"entries">,
   newTags: string[],
   contentType: string,
+  locale: string | undefined,
 ): Promise<void> {
   const currentRows = await ctx.db
     .query("entryTags")
@@ -49,7 +50,7 @@ async function syncEntryTags(
       .map((r) => ctx.db.delete("entryTags", r._id)),
     ...[...newTagSet]
       .filter((t) => !currentTagSet.has(t))
-      .map((t) => ctx.db.insert("entryTags", { entryId, tag: t, contentType })),
+      .map((t) => ctx.db.insert("entryTags", { entryId, tag: t, contentType, locale })),
   ]);
 }
 
@@ -79,6 +80,7 @@ export const create = mutation({
             entryId,
             tag,
             contentType: args.contentType,
+            locale: args.locale,
           }),
         ),
       );
@@ -195,7 +197,8 @@ export const update = mutation({
       patch.tags = fields.tags;
       const entry = await ctx.db.get("entries", entryId);
       if (entry) {
-        await syncEntryTags(ctx, entryId, fields.tags, entry.contentType);
+        const locale = fields.locale ?? entry.locale;
+        await syncEntryTags(ctx, entryId, fields.tags, entry.contentType, locale);
       }
     }
 
