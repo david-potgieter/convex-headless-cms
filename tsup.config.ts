@@ -13,6 +13,7 @@ export default defineConfig({
     i18n: 'src/component/i18n.ts',
     settings: 'src/component/settings.ts',
     uploads: 'src/component/uploads.ts',
+    assets: 'src/component/assets.ts',
   },
   format: ['esm'],
   splitting: false,
