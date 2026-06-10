@@ -1,5 +1,14 @@
 # convex-headless-cms
 
+## 1.1.3
+
+### Patch Changes
+
+- [#13](https://github.com/david-potgieter/convex-headless-cms/pull/13)
+  [`49e6aab`](https://github.com/david-potgieter/convex-headless-cms/commit/49e6aabcb75445b07e7ed376d909fc0a1855a091)
+  Thanks [@david-potgieter](https://github.com/david-potgieter)! - Added asset
+  handling
+
 ## 1.1.2
 
 ### Patch Changes
