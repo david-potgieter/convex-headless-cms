@@ -274,6 +274,14 @@ export function makeHeadlessCmsAPI(
       },
     }),
 
+    unpublish: mutationGeneric({
+      args: { entryId: v.string() },
+      handler: async (ctx, args) => {
+        await requirePublish(ctx);
+        return await ctx.runMutation(component.publish.unpublish, args);
+      },
+    }),
+
     // ── Scheduled publish ─────────────────────────────────────────────────────
 
     schedulePublish: mutationGeneric({
