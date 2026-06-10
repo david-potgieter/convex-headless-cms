@@ -1,5 +1,14 @@
 # convex-headless-cms
 
+## 1.1.2
+
+### Patch Changes
+
+- [#11](https://github.com/david-potgieter/convex-headless-cms/pull/11)
+  [`9d9a52f`](https://github.com/david-potgieter/convex-headless-cms/commit/9d9a52f9c541e78e39b5e9175602d438e895552f)
+  Thanks [@david-potgieter](https://github.com/david-potgieter)! - Fix for
+  missing image get func
+
 ## 1.1.1
 
 ### Patch Changes
