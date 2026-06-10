@@ -1,5 +1,14 @@
 # convex-headless-cms
 
+## 1.1.4
+
+### Patch Changes
+
+- [#15](https://github.com/david-potgieter/convex-headless-cms/pull/15)
+  [`57c8b5f`](https://github.com/david-potgieter/convex-headless-cms/commit/57c8b5f85e0d55bd33dd3f3f72c253eaa6bb4ce9)
+  Thanks [@david-potgieter](https://github.com/david-potgieter)! - Fix - missing
+  export
+
 ## 1.1.3
 
 ### Patch Changes
