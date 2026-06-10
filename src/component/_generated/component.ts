@@ -368,6 +368,13 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         null,
         Name
       >;
+      unpublish: FunctionReference<
+        "mutation",
+        "internal",
+        { entryId: string },
+        null,
+        Name
+      >;
     };
     schedule: {
       cancelSchedule: FunctionReference<

@@ -75,3 +75,17 @@ export const unarchive = mutation({
     return null;
   },
 });
+
+export const unpublish = mutation({
+  args: { entryId: v.id("entries") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const entry = await ctx.db.get("entries", args.entryId);
+    if (!entry) throw new Error("Entry not found");
+    if (entry.status !== "published") {
+      throw new Error(`Cannot unpublish from status "${entry.status}"`);
+    }
+    await ctx.db.patch("entries", args.entryId, { status: "draft" });
+    return null;
+  },
+});
