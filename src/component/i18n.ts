@@ -33,7 +33,20 @@ export const createTranslation = mutation({
       translationGroupId,
       isTranslation: true,
       authorId: args.authorId,
+      tags: source.tags,
     });
+
+    if (source.tags && source.tags.length > 0) {
+      await Promise.all(
+        source.tags.map((tag) =>
+          ctx.db.insert("entryTags", {
+            entryId: newEntryId,
+            tag,
+            contentType: source.contentType,
+          }),
+        ),
+      );
+    }
 
     if (args.copyBlocks) {
       const blocks = await ctx.db

@@ -178,9 +178,10 @@ export function makeHeadlessCmsAPI(
         status: v.optional(entryStatusValidator),
         locale: v.optional(v.string()),
         rootOnly: v.optional(v.boolean()),
+        tag: v.optional(v.string()),
       },
       handler: async (ctx, args) => {
-        return await ctx.runQuery(component.entries.listEntriesForAdmin, { ...args, rootOnly: args.rootOnly ?? false });
+        return await ctx.runQuery(component.entries.listEntriesForAdmin, args);
       },
     }),
 
@@ -359,6 +360,15 @@ export function makeHeadlessCmsAPI(
         return await ctx.runQuery(component.i18n.listTranslations, {
           entryId: args.entryId,
         });
+      },
+    }),
+
+    // ── Tags ─────────────────────────────────────────────────────────────────
+
+    listTags: queryGeneric({
+      args: { contentType: v.optional(v.string()) },
+      handler: async (ctx, args) => {
+        return await ctx.runQuery(component.tags.listTags, args);
       },
     }),
 

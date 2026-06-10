@@ -69,6 +69,16 @@ export default defineSchema({
     .index("by_storageId", ["storageId"])
     .index("by_type", ["type"]),
 
+  entryTags: defineTable({
+    entryId: v.id("entries"),
+    tag: v.string(),
+    contentType: v.string(),
+  })
+    .index("by_tag", ["tag"])
+    .index("by_tag_and_contentType", ["tag", "contentType"])
+    .index("by_contentType", ["contentType"])
+    .index("by_entryId", ["entryId"]),
+
   entryBlocks: defineTable({
     entryId: v.id("entries"),
     type: v.string(),

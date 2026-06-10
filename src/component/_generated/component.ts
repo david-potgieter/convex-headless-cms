@@ -23,6 +23,15 @@ import type { FunctionReference } from "convex/server";
  */
 export type ComponentApi<Name extends string | undefined = string | undefined> =
   {
+    tags: {
+      listTags: FunctionReference<
+        "query",
+        "internal",
+        { contentType?: string },
+        Array<{ tag: string; count: number }>,
+        Name
+      >;
+    };
     assets: {
       create: FunctionReference<
         "mutation",
@@ -247,6 +256,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           };
           rootOnly?: boolean;
           status?: "draft" | "pending_review" | "published" | "archived";
+          tag?: string;
         },
         any,
         Name

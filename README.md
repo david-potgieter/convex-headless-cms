@@ -9,7 +9,7 @@
 
 <strong>Headless CMS for Convex</strong>
 
-Entry lifecycle • Content blocks • Publish workflows • i18n • Scheduled publishing • Vector & text search
+Entry lifecycle • Content blocks • Publish workflows • i18n • Tags • Asset library • Scheduled publishing • Vector & text search
 
 [Setup](#setup) • [Usage](#usage) • [API Reference](#api-reference) • [Testing](#testing)
 
@@ -25,11 +25,12 @@ A [Convex component](https://www.convex.dev/components) providing a **headless C
 - **Content blocks** — ordered, typed block list per entry (headings, paragraphs, images, or any custom type)
 - **Publish workflow** — `requestReview`, `rejectReview`, `publish`, `archive`, `unarchive` with enforced transitions
 - **Scheduled publishing** — schedule an entry to go live at a future timestamp; re-scheduling cancels the prior job
-- **i18n** — per-entry locale, translation groups, `createTranslation` with optional block copy
+- **i18n** — per-entry locale, translation groups, `createTranslation` with optional block and tag copy
+- **Tags** — junction-table tag storage with efficient single-tag filtering in `listEntriesForAdmin` and `listTags` returning counts sorted by popularity
+- **Asset library** — reusable file catalog backed by component storage; `type` + `mimeType` fields support images, video, audio, documents, and anything else; signed retrieval URLs resolved server-side
 - **Public vs admin queries** — `listPublishedEntries` / `getPublishedEntryBySlug` (with `defaultLocale` fallback) for public surfaces; `listEntriesForAdmin` for the CMS dashboard
 - **Text search** — full-text search on entry titles
 - **Vector search** — semantic search via embeddings (1536-dim by default for OpenAI `text-embedding-3-small`)
-- **File uploads** — `generateUploadUrl` via Convex file storage
 - **Site settings** — typed key/value store for `siteName`, `defaultLocale`, `supportedLocales`, etc.
 - **Auth hooks** — bring your own `canWrite` / `canPublish` predicates; the component never touches `ctx.auth`
 
@@ -74,8 +75,10 @@ export const {
   schedulePublish, cancelSchedule,
   searchText, vectorSearch, setEmbedding,
   createTranslation, listTranslations,
+  listTags,
   getSetting, getAllSettings, upsertSetting,
-  generateUploadUrl,
+  generateUploadUrl, getStorageUrl,
+  listAssets, createAsset, updateAsset, deleteAsset,
 } = makeHeadlessCmsAPI(components.headlessCms, {
   canWrite: async (ctx) => (await getAuthUserId(ctx)) !== null,
   canPublish: async (ctx) => {
@@ -191,6 +194,21 @@ const { page } = await ctx.runQuery(api.cms.listEntriesForAdmin, {
 // page[0].locales → ['en', 'fr', 'de']
 ```
 
+### Tags
+
+```ts
+// Filter the admin list by tag
+const { page } = await ctx.runQuery(api.cms.listEntriesForAdmin, {
+  contentType: 'post',
+  tag: 'javascript',
+  paginationOpts: { numItems: 20, cursor: null },
+})
+
+// Get all tags with counts (for a filter sidebar)
+const tags = await ctx.runQuery(api.cms.listTags, { contentType: 'post' })
+// [{ tag: 'javascript', count: 12 }, { tag: 'typescript', count: 8 }, ...]
+```
+
 ### Asset library
 
 Upload a file then register it in the asset catalog in one flow:
@@ -293,7 +311,7 @@ makeHeadlessCmsAPI(components.headlessCms, {
 | `getPublishedEntryBySlug({ slug, contentType, locale? })` | query | Published only; locale fallback via `defaultLocale` |
 | `listPublishedEntries({ contentType?, locale?, paginationOpts })` | query | Cursor-paginated published entries |
 | `getEntryForAdmin({ entryId })` | query | Fetch any entry regardless of status |
-| `listEntriesForAdmin({ status?, contentType?, locale?, rootOnly?, paginationOpts })` | query | Cursor-paginated admin view — all statuses; `rootOnly: true` excludes translations; each item includes a `locales` field |
+| `listEntriesForAdmin({ status?, contentType?, locale?, rootOnly?, tag?, paginationOpts })` | query | Cursor-paginated admin view — all statuses; `rootOnly: true` excludes translations; `tag` filters by a single tag via junction table; each item includes a `locales` field |
 | `listBlocks({ entryId })` | query | List blocks ordered by `order` |
 | `replaceBlocks({ entryId, blocks })` | mutation | Atomically replace all blocks |
 | `upsertBlock(args)` | mutation | Insert or update a single block |
@@ -308,8 +326,9 @@ makeHeadlessCmsAPI(components.headlessCms, {
 | `searchText({ queryText, contentType?, status?, locale?, limit? })` | query | Full-text search on entry titles |
 | `vectorSearch({ embedding, contentType?, status?, limit? })` | action | Semantic search by embedding vector |
 | `setEmbedding({ entryId, embedding })` | mutation | Store a vector embedding on an entry |
-| `createTranslation({ sourceEntryId, locale, authorId, copyBlocks? })` | mutation | Create a localised copy linked by translation group |
+| `createTranslation({ sourceEntryId, locale, authorId, copyBlocks? })` | mutation | Create a localised copy linked by translation group; inherits tags from source |
 | `listTranslations({ entryId })` | query | All entries sharing the same translation group |
+| `listTags({ contentType? })` | query | All distinct tags with entry counts, sorted by popularity; optionally scoped to a content type |
 | `getSetting({ key })` | query | Read a single site setting |
 | `getAllSettings({})` | query | Read all site settings |
 | `upsertSetting({ key, value })` | mutation | Write or overwrite a site setting |
