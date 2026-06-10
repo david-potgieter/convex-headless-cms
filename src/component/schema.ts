@@ -52,6 +52,23 @@ export default defineSchema({
       filterFields: ["contentType", "status"],
     }),
 
+  assets: defineTable({
+    storageId: v.string(),
+    name: v.string(),
+    type: v.union(
+      v.literal("image"),
+      v.literal("video"),
+      v.literal("audio"),
+      v.literal("document"),
+      v.literal("other"),
+    ),
+    mimeType: v.optional(v.string()),
+    alt: v.optional(v.string()),
+    size: v.optional(v.number()),
+  })
+    .index("by_storageId", ["storageId"])
+    .index("by_type", ["type"]),
+
   entryBlocks: defineTable({
     entryId: v.id("entries"),
     type: v.string(),
