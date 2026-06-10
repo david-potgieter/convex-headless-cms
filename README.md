@@ -191,6 +191,39 @@ const { page } = await ctx.runQuery(api.cms.listEntriesForAdmin, {
 // page[0].locales → ['en', 'fr', 'de']
 ```
 
+### Asset library
+
+Upload a file then register it in the asset catalog in one flow:
+
+```ts
+// 1. Get an upload URL
+const uploadUrl = await ctx.runMutation(api.cms.generateUploadUrl, {})
+
+// 2. Upload the file (e.g. from a browser)
+const { storageId } = await fetch(uploadUrl, {
+  method: 'POST',
+  body: file,
+  headers: { 'Content-Type': file.type },
+}).then(r => r.json())
+
+// 3. Register it
+await ctx.runMutation(api.cms.createAsset, {
+  storageId,
+  name: file.name,
+  type: 'image',
+  mimeType: file.type,
+  alt: 'Hero image',
+  size: file.size,
+})
+
+// 4. List assets (URLs resolved server-side)
+const { page } = await ctx.runQuery(api.cms.listAssets, {
+  type: 'image',
+  paginationOpts: { numItems: 50, cursor: null },
+})
+// page[0].url → signed retrieval URL
+```
+
 ### Vector search
 
 ```ts
@@ -282,6 +315,10 @@ makeHeadlessCmsAPI(components.headlessCms, {
 | `upsertSetting({ key, value })` | mutation | Write or overwrite a site setting |
 | `generateUploadUrl({})` | mutation | Get a Convex file upload URL |
 | `getStorageUrl({ storageId })` | query | Resolve a storageId to a signed retrieval URL (returns `null` if the file does not exist) |
+| `listAssets({ type?, paginationOpts })` | query | Paginated asset catalog; filter by `type` (`image` \| `video` \| `audio` \| `document` \| `other`); each item includes a resolved `url` |
+| `createAsset({ storageId, name, type, mimeType?, alt?, size? })` | mutation | Register an uploaded file in the asset catalog |
+| `updateAsset({ assetId, name?, alt? })` | mutation | Update asset name or alt text |
+| `deleteAsset({ assetId })` | mutation | Remove an asset record |
 
 ## Testing
 

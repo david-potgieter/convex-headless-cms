@@ -387,5 +387,73 @@ export function makeHeadlessCmsAPI(
         return await ctx.runMutation(component.uploads.generateUploadUrl, {});
       },
     }),
+
+    getStorageUrl: queryGeneric({
+      args: { storageId: v.string() },
+      handler: async (ctx, args) => {
+        return await ctx.runQuery(component.uploads.getStorageUrl, args);
+      },
+    }),
+
+    // ── Assets ────────────────────────────────────────────────────────────────
+
+    listAssets: queryGeneric({
+      args: {
+        paginationOpts: paginationOptsValidator,
+        type: v.optional(
+          v.union(
+            v.literal("image"),
+            v.literal("video"),
+            v.literal("audio"),
+            v.literal("document"),
+            v.literal("other"),
+          ),
+        ),
+      },
+      handler: async (ctx, args) => {
+        return await ctx.runQuery(component.assets.list, args);
+      },
+    }),
+
+    createAsset: mutationGeneric({
+      args: {
+        storageId: v.string(),
+        name: v.string(),
+        type: v.union(
+          v.literal("image"),
+          v.literal("video"),
+          v.literal("audio"),
+          v.literal("document"),
+          v.literal("other"),
+        ),
+        mimeType: v.optional(v.string()),
+        alt: v.optional(v.string()),
+        size: v.optional(v.number()),
+      },
+      handler: async (ctx, args) => {
+        await requireWrite(ctx);
+        return await ctx.runMutation(component.assets.create, args);
+      },
+    }),
+
+    updateAsset: mutationGeneric({
+      args: {
+        assetId: v.string(),
+        name: v.optional(v.string()),
+        alt: v.optional(v.string()),
+      },
+      handler: async (ctx, args) => {
+        await requireWrite(ctx);
+        return await ctx.runMutation(component.assets.update, args);
+      },
+    }),
+
+    deleteAsset: mutationGeneric({
+      args: { assetId: v.string() },
+      handler: async (ctx, args) => {
+        await requireWrite(ctx);
+        return await ctx.runMutation(component.assets.remove, args);
+      },
+    }),
   };
 }

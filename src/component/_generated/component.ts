@@ -411,5 +411,59 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         string,
         Name
       >;
+      getStorageUrl: FunctionReference<
+        "query",
+        "internal",
+        { storageId: string },
+        string | null,
+        Name
+      >;
+    };
+    assets: {
+      list: FunctionReference<
+        "query",
+        "internal",
+        {
+          paginationOpts: {
+            cursor: string | null;
+            endCursor?: string | null;
+            id?: number;
+            maximumBytesRead?: number;
+            maximumRowsRead?: number;
+            numItems: number;
+          };
+          type?: "image" | "video" | "audio" | "document" | "other";
+        },
+        any,
+        Name
+      >;
+      create: FunctionReference<
+        "mutation",
+        "internal",
+        {
+          storageId: string;
+          name: string;
+          type: "image" | "video" | "audio" | "document" | "other";
+          mimeType?: string;
+          alt?: string;
+          size?: number;
+        },
+        string,
+        Name
+      >;
+      update: FunctionReference<
+        "mutation",
+        "internal",
+        { assetId: string; name?: string; alt?: string },
+        null,
+        Name
+      >;
+      remove: FunctionReference<
+        "mutation",
+        "internal",
+        { assetId: string },
+        null,
+        Name
+      >;
     };
   };
